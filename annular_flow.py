@@ -224,7 +224,7 @@ def create_annular_flow_functions(
                     return result
                 else:
                     return 0.0
-            except:
+            except Exception:
                 return 0.0
     
     return calculate_flow_rate, calculate_pressure_drop
