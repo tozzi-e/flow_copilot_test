@@ -1,0 +1,23 @@
+#!/bin/sh
+set -eu
+
+CASE_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ROOT_DIR=$(CDPATH= cd -- "$CASE_DIR/.." && pwd)
+cd "$CASE_DIR"
+
+python3 scripts/renderCase.py
+
+if ! command -v blockMesh >/dev/null 2>&1 || ! command -v setFields >/dev/null 2>&1 || ! command -v foamRun >/dev/null 2>&1; then
+    echo "Required OpenFOAM Foundation v14 commands were not found in PATH. Rendering completed, but execution was skipped." >&2
+    exit 0
+fi
+
+if [ -x "$ROOT_DIR/build.sh" ]; then
+    "$ROOT_DIR/build.sh"
+fi
+
+./Allclean || true
+python3 scripts/renderCase.py
+blockMesh > log.blockMesh 2>&1
+setFields > log.setFields 2>&1
+foamRun > log.foamRun 2>&1

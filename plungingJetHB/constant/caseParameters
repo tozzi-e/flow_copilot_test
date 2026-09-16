@@ -1,0 +1,51 @@
+/*--------------------------------*- C++ -*----------------------------------*\\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  14
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      caseParameters;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Jet geometry and operating point
+jetDiameter                 1.0e-3; // [m]
+jetVelocity                 1.5;    // [m/s]
+jetStandOffDistance         6.0;    // [D] initial gap from jet tip to pool surface
+
+// Domain and mesh (dimensionless lengths are in multiples of D)
+poolDepth                   10.0;   // [D]
+gasHeight                   12.0;   // [D] total air region above the initial pool
+
+domainRadius                8.0;    // [D]
+wedgeAngle                  4.0;    // [deg]
+meshLevel                   16;     // [-] target cells per D
+
+// Material properties
+rhoLiquid                   1000.0; // [kg/m3]
+rhoAir                      1.2;    // [kg/m3]
+muAir                       1.8e-5; // [Pa.s]
+surfaceTension              0.072;  // [N/m]
+
+// Regularised Herschel-Bulkley liquid properties (dynamic viscosity form)
+tauY                        12.0;   // [Pa]
+K                           0.45;   // [Pa.s^n]
+n                           0.55;   // [-]
+regularizationParameter     1.0e-3; // [1/s]
+muMin                       1.0e-3; // [Pa.s]
+muMax                       50.0;   // [Pa.s]
+
+// Time stepping and output
+maxCo                       0.5;
+maxAlphaCo                  0.25;
+maxDeltaT                   1.0e-3; // [s]
+endTime                     0.15;   // [s]
+writeInterval               0.01;   // [s]
+
+// ************************************************************************* //

@@ -1,0 +1,36 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \    /   O peration     | Website:  https://openfoam.org
+    \  /    A nd           | Version:  14
+     \/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      momentumTransport.liquid;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+simulationType  laminar;
+
+laminar
+{
+    model                   generalisedNewtonian;
+    viscosityModel          regularisedHerschelBulkley;
+
+    regularisedHerschelBulkleyCoeffs
+    {
+        rho                     1000;
+        tauY                    12;
+        K                       0.45;
+        n                       0.55;
+        regularizationParameter 0.001;
+        muMin                   0.001;
+        muMax                   50;
+    }
+}
+
+// ************************************************************************* //

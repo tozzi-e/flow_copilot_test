@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+
+CASE_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+cd "$CASE_DIR"
+
+rm -rf constant/polyMesh 0.orig processor* postProcessing [1-9]* [1-9]*.* log.* renderedCaseSummary.txt
+find . -maxdepth 1 -type f \( -name '*.OpenFOAM' -o -name '*.foam' \) -delete

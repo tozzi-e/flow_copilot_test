@@ -1,0 +1,16 @@
+#!/bin/sh
+set -eu
+
+CASE_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ROOT_DIR=$(CDPATH= cd -- "$CASE_DIR/.." && pwd)
+cd "$CASE_DIR"
+
+python3 scripts/renderCase.py
+
+if ! command -v blockMesh >/dev/null 2>&1 || ! command -v setFields >/dev/null 2>&1; then
+    echo "OpenFOAM Foundation v14 utilities were not found in PATH. Rendering completed, but mesh generation was skipped." >&2
+    exit 0
+fi
+
+blockMesh > log.blockMesh 2>&1
+setFields > log.setFields 2>&1

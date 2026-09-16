@@ -1,0 +1,35 @@
+#!/bin/sh
+set -eu
+
+NPROCS=${1:-4}
+CASE_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ROOT_DIR=$(CDPATH= cd -- "$CASE_DIR/.." && pwd)
+cd "$CASE_DIR"
+
+python3 scripts/renderCase.py
+python3 - "$NPROCS" <<'PY'
+from pathlib import Path
+import re
+import sys
+path = Path('system/decomposeParDict')
+text = path.read_text()
+text = re.sub(r'numberOfSubdomains\s+\d+;', f'numberOfSubdomains  {int(sys.argv[1])};', text)
+path.write_text(text)
+PY
+
+if ! command -v blockMesh >/dev/null 2>&1 || ! command -v setFields >/dev/null 2>&1 || ! command -v decomposePar >/dev/null 2>&1 || ! command -v foamRun >/dev/null 2>&1; then
+    echo "Required OpenFOAM Foundation v14 commands were not found in PATH. Rendering completed, but parallel execution was skipped." >&2
+    exit 0
+fi
+
+if [ -x "$ROOT_DIR/build.sh" ]; then
+    "$ROOT_DIR/build.sh"
+fi
+
+./Allclean || true
+python3 scripts/renderCase.py
+blockMesh > log.blockMesh 2>&1
+setFields > log.setFields 2>&1
+decomposePar -force > log.decomposePar 2>&1
+mpirun -np "$NPROCS" foamRun -parallel > log.foamRun.parallel 2>&1
+reconstructPar > log.reconstructPar 2>&1
