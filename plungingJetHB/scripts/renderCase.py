@@ -324,17 +324,13 @@ laminar
 {{
     model                   generalisedNewtonian;
     viscosityModel          regularisedHerschelBulkley;
-
-    regularisedHerschelBulkleyCoeffs
-    {{
-        rho                     {fmt_scalar(p['rhoLiquid'])};
-        tauY                    {fmt_scalar(p['tauY'])};
-        K                       {fmt_scalar(p['K'])};
-        n                       {fmt_scalar(p['n'])};
-        regularizationParameter {fmt_scalar(p['regularizationParameter'])};
-        muMin                   {fmt_scalar(p['muMin'])};
-        muMax                   {fmt_scalar(p['muMax'])};
-    }}
+    rho                     {fmt_scalar(p['rhoLiquid'])};
+    tauY                    {fmt_scalar(p['tauY'])};
+    K                       {fmt_scalar(p['K'])};
+    n                       {fmt_scalar(p['n'])};
+    regularizationParameter {fmt_scalar(p['regularizationParameter'])};
+    muMin                   {fmt_scalar(p['muMin'])};
+    muMax                   {fmt_scalar(p['muMax'])};
 }}"""
         )
     )

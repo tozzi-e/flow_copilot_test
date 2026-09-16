@@ -20,17 +20,13 @@ laminar
 {
     model                   generalisedNewtonian;
     viscosityModel          regularisedHerschelBulkley;
-
-    regularisedHerschelBulkleyCoeffs
-    {
-        rho                     1000;
-        tauY                    12;
-        K                       0.45;
-        n                       0.55;
-        regularizationParameter 0.001;
-        muMin                   0.001;
-        muMax                   50;
-    }
+    rho                     1000;
+    tauY                    12;
+    K                       0.45;
+    n                       0.55;
+    regularizationParameter 0.001;
+    muMin                   0.001;
+    muMax                   50;
 }
 
 // ************************************************************************* //
