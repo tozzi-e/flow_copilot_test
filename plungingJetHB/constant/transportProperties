@@ -1,0 +1,30 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \    /   O peration     | Website:  https://openfoam.org
+    \  /    A nd           | Version:  14
+     \/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      transportProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Informational compatibility file for users migrating from older cases.
+// Foundation v14 incompressibleVoF reads phaseProperties,
+// physicalProperties.<phase>, and momentumTransport.<phase> instead.
+includeFiles
+(
+    phaseProperties
+    physicalProperties.liquid
+    physicalProperties.air
+    momentumTransport
+    momentumTransport.liquid
+    momentumTransport.air
+);
+
+// ************************************************************************* //

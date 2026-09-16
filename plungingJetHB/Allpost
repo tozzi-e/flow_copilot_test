@@ -1,0 +1,44 @@
+#!/bin/sh
+set -eu
+
+CASE_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+cd "$CASE_DIR"
+
+mkdir -p postProcessing/paraview
+touch plungingJetHB.OpenFOAM
+
+cat > postProcessing/paraview/loadCase.py <<'PY'
+from paraview.simple import *
+
+case = OpenFOAMReader(FileName='plungingJetHB.OpenFOAM')
+case.MeshRegions = ['internalMesh']
+case.CellArrays = ['alpha.liquid', 'U', 'p_rgh', 'gammaDot.liquid', 'muEff.liquid']
+Show(case)
+Render()
+PY
+
+python3 - <<'PY'
+from pathlib import Path
+
+summary = [
+    'plungingJetHB post-processing summary',
+    '===================================',
+    '',
+    'Generated ParaView helper: postProcessing/paraview/loadCase.py',
+]
+
+checks = [
+    ('liquidVolume', 'postProcessing/liquidVolume'),
+    ('inletFlowRate', 'postProcessing/inletFlowRate'),
+    ('maxVelocity', 'postProcessing/maxVelocity'),
+    ('muEffMax', 'postProcessing/muEffMax'),
+    ('cavityDepthAxis', 'postProcessing/cavityDepthAxis'),
+]
+for label, rel in checks:
+    path = Path(rel)
+    state = 'present' if path.exists() else 'not generated yet'
+    summary.append(f'- {label}: {state}')
+
+Path('postProcessing/summary.txt').write_text('\n'.join(summary) + '\n')
+print('\n'.join(summary))
+PY

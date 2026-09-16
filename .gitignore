@@ -1,0 +1,8 @@
+plungingJetHB/constant/polyMesh/
+plungingJetHB/postProcessing/
+plungingJetHB/processor*/
+plungingJetHB/log.*
+plungingJetHB/renderedCaseSummary.txt
+plungingJetHB/*.OpenFOAM
+applications/regularisedHerschelBulkley/linux*/
+plungingJetHB/scripts/__pycache__/

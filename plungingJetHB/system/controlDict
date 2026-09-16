@@ -1,0 +1,172 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \    /   O peration     | Website:  https://openfoam.org
+    \  /    A nd           | Version:  14
+     \/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+libs
+(
+    "libutilityFunctionObjects.so"
+    "libfieldFunctionObjects.so"
+    "libregularisedHBViscosityModel.so"
+);
+
+solver          incompressibleVoF;
+
+startFrom       startTime;
+startTime       0;
+stopAt          endTime;
+endTime         0.15;
+deltaT          1e-5;
+
+writeControl    adjustableRunTime;
+writeInterval   0.01;
+purgeWrite      0;
+writeFormat     ascii;
+writePrecision  10;
+writeCompression off;
+timeFormat      general;
+timePrecision   8;
+runTimeModifiable yes;
+
+adjustTimeStep  yes;
+maxCo           0.5;
+maxAlphaCo      0.25;
+maxDeltaT       0.001;
+
+functions
+{
+    residuals
+    {
+        type            residuals;
+        libs            ("libutilityFunctionObjects.so");
+        writeControl    timeStep;
+        writeInterval   1;
+        fields          (U p_rgh alpha.liquid);
+    }
+
+    inletFlowRate
+    {
+        type            surfaceFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+        writeControl    timeStep;
+        writeInterval   1;
+        log             yes;
+        writeFields     false;
+        patch           inlet;
+        operation       sum;
+        fields          (phi);
+        weightField     alpha.liquid;
+    }
+
+    liquidVolume
+    {
+        type            volFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+        writeControl    timeStep;
+        writeInterval   1;
+        log             yes;
+        writeFields     false;
+        cellZone        all;
+        operation       volIntegrate;
+        fields          (alpha.liquid);
+    }
+
+    maxVelocity
+    {
+        type            volFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+        writeControl    timeStep;
+        writeInterval   1;
+        log             yes;
+        writeFields     false;
+        cellZone        all;
+        operation       maxMag;
+        fields          (U);
+    }
+
+    alphaMin
+    {
+        type            volFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+        writeControl    timeStep;
+        writeInterval   1;
+        log             yes;
+        writeFields     false;
+        cellZone        all;
+        operation       min;
+        fields          (alpha.liquid);
+    }
+
+    alphaMax
+    {
+        type            volFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+        writeControl    timeStep;
+        writeInterval   1;
+        log             yes;
+        writeFields     false;
+        cellZone        all;
+        operation       max;
+        fields          (alpha.liquid);
+    }
+
+    gammaDotMax
+    {
+        type            volFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+        writeControl    timeStep;
+        writeInterval   1;
+        log             yes;
+        writeFields     false;
+        cellZone        all;
+        operation       max;
+        fields          (gammaDot.liquid);
+    }
+
+    muEffMin
+    {
+        type            volFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+        writeControl    timeStep;
+        writeInterval   1;
+        log             yes;
+        writeFields     false;
+        cellZone        all;
+        operation       min;
+        fields          (muEff.liquid);
+    }
+
+    muEffMax
+    {
+        type            volFieldValue;
+        libs            ("libfieldFunctionObjects.so");
+        writeControl    timeStep;
+        writeInterval   1;
+        log             yes;
+        writeFields     false;
+        cellZone        all;
+        operation       max;
+        fields          (muEff.liquid);
+    }
+
+    cavityDepthAxis
+    {
+        type            interfaceHeight;
+        libs            ("libfieldFunctionObjects.so");
+        alpha           alpha.liquid;
+        locations       ((0 0 0.022));
+    }
+}
+
+// ************************************************************************* //
