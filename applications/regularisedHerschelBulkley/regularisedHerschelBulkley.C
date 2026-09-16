@@ -90,8 +90,11 @@ regularisedHerschelBulkley::read
 {
     strainRateViscosityModel::read(viscosityProperties);
 
+    const word coeffDictName(typeName + "Coeffs");
     const dictionary& coeffs =
-        viscosityProperties.optionalTypeDict(typeName);
+        viscosityProperties.found(coeffDictName)
+      ? viscosityProperties.subDict(coeffDictName)
+      : viscosityProperties;
 
     rho_.read(coeffs);
     n_.read(coeffs);
